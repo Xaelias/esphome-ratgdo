@@ -64,43 +64,45 @@ namespace ratgdo {
 
         void Secplus1::wall_panel_emulation(size_t index)
         {
-            if (this->wall_panel_emulation_state_ == WallPanelEmulationState::WAITING) {
-                ESP_LOG1(TAG, "Looking for security+ 1.0 wall panel...");
+            ESP_LOG1(TAG, "Bypassing emulation mode entirely.");
+            return
+            //if (this->wall_panel_emulation_state_ == WallPanelEmulationState::WAITING) {
+                //ESP_LOG1(TAG, "Looking for security+ 1.0 wall panel...");
 
-                if (this->door_state != DoorState::UNKNOWN || this->light_state != LightState::UNKNOWN) {
-                    ESP_LOG1(TAG, "Wall panel detected");
-                    return;
-                }
-                if (millis() - this->wall_panel_emulation_start_ > 35000 && !this->wall_panel_starting_) {
-                    ESP_LOG1(TAG, "No wall panel detected. Switching to emulation mode.");
-                    this->wall_panel_emulation_state_ = WallPanelEmulationState::RUNNING;
-                }
-                this->scheduler_->set_timeout(this->ratgdo_, "wall_panel_emulation", 2000, [=] {
-                    this->wall_panel_emulation();
-                });
-                return;
-            } else if (this->wall_panel_emulation_state_ == WallPanelEmulationState::RUNNING) {
-                // ESP_LOG2(TAG, "[Wall panel emulation] Sending byte: [%02X]", secplus1_states[index]);
+                //if (this->door_state != DoorState::UNKNOWN || this->light_state != LightState::UNKNOWN) {
+                    //ESP_LOG1(TAG, "Wall panel detected");
+                    //return;
+                //}
+                //if (millis() - this->wall_panel_emulation_start_ > 35000 && !this->wall_panel_starting_) {
+                    //ESP_LOG1(TAG, "No wall panel detected. Switching to emulation mode.");
+                    //this->wall_panel_emulation_state_ = WallPanelEmulationState::RUNNING;
+                //}
+                //this->scheduler_->set_timeout(this->ratgdo_, "wall_panel_emulation", 2000, [=] {
+                    //this->wall_panel_emulation();
+                //});
+                //return;
+            //} else if (this->wall_panel_emulation_state_ == WallPanelEmulationState::RUNNING) {
+                //// ESP_LOG2(TAG, "[Wall panel emulation] Sending byte: [%02X]", secplus1_states[index]);
 
-                if (index < 15 || !this->do_transmit_if_pending()) {
-                    this->transmit_byte(secplus1_states[index]);
-                    // gdo response simulation for testing
-                    // auto resp = secplus1_states[index] == 0x39 ? 0x00 :
-                    //             secplus1_states[index] == 0x3A ? 0x5C :
-                    //             secplus1_states[index] == 0x38 ? 0x52 : 0xFF;
-                    // if (resp != 0xFF) {
-                    //     this->transmit_byte(resp, true);
-                    // }
+                //if (index < 15 || !this->do_transmit_if_pending()) {
+                    //this->transmit_byte(secplus1_states[index]);
+                    //// gdo response simulation for testing
+                    //// auto resp = secplus1_states[index] == 0x39 ? 0x00 :
+                    ////             secplus1_states[index] == 0x3A ? 0x5C :
+                    ////             secplus1_states[index] == 0x38 ? 0x52 : 0xFF;
+                    //// if (resp != 0xFF) {
+                    ////     this->transmit_byte(resp, true);
+                    //// }
 
-                    index += 1;
-                    if (index == 18) {
-                        index = 15;
-                    }
-                }
-                this->scheduler_->set_timeout(this->ratgdo_, "wall_panel_emulation", 250, [=] {
-                    this->wall_panel_emulation(index);
-                });
-            }
+                    //index += 1;
+                    //if (index == 18) {
+                        //index = 15;
+                    //}
+                //}
+                //this->scheduler_->set_timeout(this->ratgdo_, "wall_panel_emulation", 250, [=] {
+                    //this->wall_panel_emulation(index);
+                //});
+            //}
         }
 
         void Secplus1::light_action(LightAction action)
